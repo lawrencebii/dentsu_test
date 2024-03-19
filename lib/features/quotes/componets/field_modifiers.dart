@@ -62,7 +62,7 @@ List<Widget> titleAndDropDownField(name, items, controller) {
     ),
     DropdownTextFieldCustom(
       validator: (value) => value!.isEmpty ? "Please select $name" : null,
-      controller: TextEditingController(),
+      controller: controller,
       hintText: "Select $name",
       items: items,
     ),

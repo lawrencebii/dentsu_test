@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:prime_template/features/quotes/quote_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/colors.dart';
@@ -59,6 +60,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               CustomIconButtonNotification(
                 onTap: () {
                   context.read<NavigationProvider>().setSelectedIndex(2);
+                  context.read<QuoteProvider>().fetchAllQuotes(context);
                 },
                 mainfocus: selected == 2,
                 svglink: 'assets/icons/quotes.svg',

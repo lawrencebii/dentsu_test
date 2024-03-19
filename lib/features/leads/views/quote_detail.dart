@@ -30,85 +30,96 @@ class _QuoteDetailsState extends State<QuoteDetails> {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15),
         child: SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(),
+          // physics: NeverScrollableScrollPhysics(),
           child: Consumer<QuoteProvider>(
             builder: (context, provider, child) {
               bool isQuoteInfo = provider.currentTab == QUOTETABS.QUOTEINFO;
               bool isSetup = provider.currentTab == QUOTETABS.SETUP;
               bool isBenefits = provider.currentTab == QUOTETABS.BENEFITS;
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Icon(Icons.arrow_back_ios)),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          "View Quote",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 22,
-                            color: headingColor,
+              return SizedBox(
+                height: size.height * 1.05,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Icon(Icons.arrow_back_ios)),
+                          SizedBox(
+                            width: 5,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 40,
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.black.withOpacity(0.1),
-                          width: 1.0,
-                        ),
+                          Text(
+                            provider.isAddingQuote
+                                ? "Create Quote"
+                                : "View Quote",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 22,
+                              color: headingColor,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        GestureDetector(
-                            onTap: () {
-                              context
-                                  .read<QuoteProvider>()
-                                  .toggleQuoteTab(QUOTETABS.QUOTEINFO);
-                            },
-                            child: selectionTabs(
-                                context, 'Quote Information', isQuoteInfo)),
-                        GestureDetector(
-                            onTap: () {
-                              context
-                                  .read<QuoteProvider>()
-                                  .toggleQuoteTab(QUOTETABS.SETUP);
-                            },
-                            child: selectionTabs(context, 'Setup', isSetup)),
-                        GestureDetector(
-                            onTap: () {
-                              context
-                                  .read<QuoteProvider>()
-                                  .toggleQuoteTab(QUOTETABS.BENEFITS);
-                            },
-                            child:
-                                selectionTabs(context, 'Benefits', isBenefits)),
-                        SizedBox(),
-                      ],
+                    Container(
+                      height: 40,
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Colors.black.withOpacity(0.1),
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                              onTap: () {
+                                context
+                                    .read<QuoteProvider>()
+                                    .toggleQuoteTab(QUOTETABS.QUOTEINFO);
+                              },
+                              child: selectionTabs(
+                                  context, 'Quote Information', isQuoteInfo)),
+                          GestureDetector(
+                              onTap: () {
+                                context
+                                    .read<QuoteProvider>()
+                                    .toggleQuoteTab(QUOTETABS.SETUP);
+                              },
+                              child: selectionTabs(context, 'Setup', isSetup)),
+                          GestureDetector(
+                              onTap: () {
+                                context
+                                    .read<QuoteProvider>()
+                                    .toggleQuoteTab(QUOTETABS.BENEFITS);
+                              },
+                              child: selectionTabs(
+                                  context, 'Benefits', isBenefits)),
+                          SizedBox(),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  if (isQuoteInfo) QuoteInfoSection(),
-                  if (isSetup) QuoteSetupSection(),
-                  if (isBenefits) QuoteBenefitSection()
-                ],
+                    SizedBox(
+                      height: 20,
+                    ),
+                    if (isQuoteInfo) QuoteInfoSection(),
+                    if (isSetup) QuoteSetupSection(),
+                    if (isBenefits) QuoteBenefitSection(),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    SizedBox(
+                      height: MediaQuery.viewInsetsOf(context).bottom,
+                    ),
+                  ],
+                ),
               );
             },
           ),

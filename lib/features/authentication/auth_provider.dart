@@ -33,7 +33,7 @@ class AuthenticationProvider extends ChangeNotifier {
           usernameController.text.trim(), passwordController.text.trim());
     }
     if (user != null) {
-      _userCredential = _userCredential;
+      _userCredential = user;
       notifyListeners();
       pr.hide();
       Navigator.push(

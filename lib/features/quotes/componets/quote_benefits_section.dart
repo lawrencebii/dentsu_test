@@ -37,7 +37,7 @@ class _QuoteBenefitSectionState extends State<QuoteBenefitSection> {
                         'KES 1,000,000',
                         'KES 1,500,000',
                       ],
-                      TextEditingController()),
+                      provider.inpatientCoverLimitController),
                   Container(
                     width: size.width - 30,
                     padding: EdgeInsets.all(15),

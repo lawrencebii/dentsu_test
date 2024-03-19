@@ -17,6 +17,7 @@ class QuoteProvider extends ChangeNotifier {
   get isAddingQuote => _isAddingQuote;
   void setIsAddingQuote(val) {
     _isAddingQuote = val;
+    clearControllers();
     notifyListeners();
   }
 
@@ -24,6 +25,8 @@ class QuoteProvider extends ChangeNotifier {
   QUOTETABS get currentTab => _currentTab;
   void toggleQuoteTab(QUOTETABS qtab) {
     if (!_isAddingQuote) {
+      _currentTab = qtab;
+    } else if (qtab == QUOTETABS.QUOTEINFO) {
       _currentTab = qtab;
     }
     notifyListeners();
@@ -35,7 +38,7 @@ class QuoteProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<String> _selectedBenefits = [];
+  List<dynamic> _selectedBenefits = [];
   get selectedBenefits => _selectedBenefits;
   void addBenefit(benefit) {
     if (_selectedBenefits.contains(benefit)) {
@@ -56,8 +59,8 @@ class QuoteProvider extends ChangeNotifier {
   Future<void> addQuoteToFirebase(context) async {
     ProgressDialog pr = ProgressDialog(context);
     pr.show();
-    DatabaseReference quotesRef =
-        FirebaseDatabase.instance.reference().child('quotes');
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference quotes = firestore.collection('quotes');
 
     try {
       Map<String, dynamic> quoteData = {
@@ -82,16 +85,37 @@ class QuoteProvider extends ChangeNotifier {
       };
       pr.hide();
       Navigator.of(context).pop();
-      showsnack(context, "Quote Added");
-      // return quotesRef
-      //     .push()
-      //     .set(quoteData)
-      //     .then((value) => showsnack(context, "Quote added"))
-      //     .catchError(
-      //         (error) => showsnack(context, "Failed to add quote: $error"));
+      return quotes.add(quoteData).then((value) {
+        showsnack(context, "Quote added with ID: ${value.id}");
+        fetchAllQuotes(context);
+        // Navigator.pop(context);
+        clearControllers();
+      }).catchError(
+          (error) => showsnack(context, "Failed to add quote: $error"));
     } catch (e) {
       pr.hide();
       showsnack(context, "Failed to add Quote: $e");
+    }
+  }
+
+  dynamic _quotes;
+  get quotes => _quotes;
+
+  Future<void> fetchAllQuotes(context) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference quotesRef = firestore.collection('quotes');
+    ProgressDialog pr = ProgressDialog(context);
+    pr.show();
+    try {
+      QuerySnapshot querySnapshot = await quotesRef.get();
+      final allQuotes = querySnapshot.docs.map((doc) => doc.data()).toList();
+      pr.hide();
+      _quotes = allQuotes;
+      notifyListeners();
+    } catch (e) {
+      pr.hide();
+      showsnack(context, "Error fetching quotes: $e");
+      print("Error fetching quotes: $e");
     }
   }
 
@@ -109,12 +133,58 @@ class QuoteProvider extends ChangeNotifier {
   TextEditingController capturingUserController = TextEditingController();
 //   setup
   TextEditingController ageBracketController = TextEditingController();
-  TextEditingController inpatientCoverLimitController = TextEditingController();
   TextEditingController spouseCoveredController = TextEditingController();
   TextEditingController numberOfChildrenController = TextEditingController();
   TextEditingController coverChildrenController = TextEditingController();
   TextEditingController spouseAgeBracketController = TextEditingController();
 //    benefits
-  TextEditingController innpatientCoverLimitController =
-      TextEditingController();
+  TextEditingController inpatientCoverLimitController = TextEditingController();
+
+  void clearControllers() {
+    firstNameController.clear();
+    lastNameController.clear();
+    middleNameController.clear();
+    originatingLeadSourceController.clear();
+    quoteIdController.clear();
+    owningBusinessUnitController.clear();
+    leadIdController.clear();
+    sourceController.clear();
+    capturingUserController.clear();
+    ageBracketController.clear();
+    inpatientCoverLimitController.clear();
+    spouseCoveredController.clear();
+    numberOfChildrenController.clear();
+    coverChildrenController.clear();
+    spouseAgeBracketController.clear();
+    inpatientCoverLimitController.clear();
+    notifyListeners();
+  }
+
+  void refreshState() {
+    notifyListeners();
+  }
+
+  void prefillControllers(Map<String, dynamic> mapData) {
+    firstNameController.text = mapData['firstName'] ?? '';
+    lastNameController.text = mapData['lastName'] ?? '';
+    middleNameController.text = mapData['middleName'] ?? '';
+    originatingLeadSourceController.text =
+        mapData['originatingLeadSource'] ?? '';
+    quoteIdController.text = mapData['quoteId'] ?? '';
+    owningBusinessUnitController.text = mapData['owningBusinessUnit'] ?? '';
+    leadIdController.text = mapData['leadId'] ?? '';
+    sourceController.text = mapData['source'] ?? '';
+    capturingUserController.text = mapData['capturingUser'] ?? '';
+    ageBracketController.text = mapData['ageBracket'] ?? '';
+    inpatientCoverLimitController.text = mapData['inpatientCoverLimit'] ?? '';
+    spouseCoveredController.text = mapData['spouseCovered'] ?? '';
+    numberOfChildrenController.text = mapData['numberOfChildren'] ?? '';
+    coverChildrenController.text = mapData['coverChildren'] ?? '';
+    spouseAgeBracketController.text = mapData['spouseAgeBracket'] ?? '';
+    inpatientCoverLimitController.text = mapData['inpatientCoverLimit'] ?? '';
+    _selectedBenefits = mapData['benefits'] ?? <String>[];
+    _groupValue = mapData['payment'];
+
+    notifyListeners();
+  }
 }

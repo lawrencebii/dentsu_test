@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:prime_template/features/quotes/quote_provider.dart';
@@ -58,6 +60,25 @@ class DropdownTextFieldCustom extends StatefulWidget {
 
 class _DropdownTextFieldCustomState extends State<DropdownTextFieldCustom> {
   String? selectedValue;
+  @override
+  void initState() {
+    // TODO: implement initState
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      try {
+        setState(() {
+          if (widget.controller.text.isNotEmpty) {
+            selectedValue = widget.controller.text;
+            widget.onChanged!(selectedValue ?? '');
+          }
+        });
+      } catch (e) {
+        selectedValue = widget.controller.text;
+        setState(() {});
+        log("Prefile" + e.toString());
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,18 +92,26 @@ class _DropdownTextFieldCustomState extends State<DropdownTextFieldCustom> {
       child: DropdownButtonFormField<String>(
         value: selectedValue,
 
-        hint: Text(widget.hintText ?? 'Select an item'),
+        hint: enabled
+            ? Text(
+                widget.hintText ?? 'Select an item',
+              )
+            : null,
         // icon: widget.suffixIcon ?? Icon(Icons.arrow_drop_down),
-        icon: SizedBox(
-          width: 30,
-          child: widget.suffixIcon ??
-              SvgPicture.asset('assets/icons/dropdown.svg'),
-        ),
+        icon: enabled
+            ? SizedBox(
+                width: 20,
+                child: widget.suffixIcon ??
+                    SvgPicture.asset('assets/icons/dropdown.svg'),
+              )
+            : SizedBox(),
         onChanged: !enabled
             ? null
             : (String? newValue) {
                 setState(() {
                   selectedValue = newValue;
+                  widget.controller.text = selectedValue ?? '';
+                  context.read<QuoteProvider>().refreshState();
                 });
                 if (widget.onChanged != null) {
                   widget.onChanged!(newValue!);
@@ -95,6 +124,8 @@ class _DropdownTextFieldCustomState extends State<DropdownTextFieldCustom> {
             child: Text(value),
           );
         }).toList(),
+        style: TextStyle(color: Colors.black),
+
         decoration: InputDecoration(
           isDense: false,
           contentPadding: EdgeInsets.only(
@@ -102,7 +133,7 @@ class _DropdownTextFieldCustomState extends State<DropdownTextFieldCustom> {
           hintStyle: widget.hintStyle ??
               TextStyle(
                 fontSize: 17,
-                color: Colors.grey,
+                color: enabled ? Colors.black.withOpacity(0.6) : Colors.black,
               ),
           enabled:
               Provider.of<QuoteProvider>(context, listen: false).isAddingQuote,

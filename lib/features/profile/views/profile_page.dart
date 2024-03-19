@@ -28,6 +28,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(
                   height: 40,
                 ),
+                Text("Username : ${userCredential!.user!.email} "),
+                SizedBox(
+                  height: 40,
+                ),
                 Center(
                   child: GestureDetector(
                     onTap: () async {
