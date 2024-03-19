@@ -82,12 +82,13 @@ class QuoteProvider extends ChangeNotifier {
       };
       pr.hide();
       Navigator.of(context).pop();
-      return quotesRef
-          .push()
-          .set(quoteData)
-          .then((value) => showsnack(context, "Quote added"))
-          .catchError(
-              (error) => showsnack(context, "Failed to add quote: $error"));
+      showsnack(context, "Quote Added");
+      // return quotesRef
+      //     .push()
+      //     .set(quoteData)
+      //     .then((value) => showsnack(context, "Quote added"))
+      //     .catchError(
+      //         (error) => showsnack(context, "Failed to add quote: $error"));
     } catch (e) {
       pr.hide();
       showsnack(context, "Failed to add Quote: $e");
