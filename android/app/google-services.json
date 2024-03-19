@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "533965491780",
+    "project_id": "fluttertest-17567",
+    "storage_bucket": "fluttertest-17567.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:533965491780:android:19124aa8284cc9955d7611",
+        "android_client_info": {
+          "package_name": "com.dentsu.test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwZwfH1Q0vXU_-Vy8ngib7_EtCAlktdlM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
